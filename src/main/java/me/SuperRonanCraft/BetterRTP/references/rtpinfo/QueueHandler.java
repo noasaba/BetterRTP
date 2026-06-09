@@ -61,6 +61,7 @@ public class QueueHandler implements Listener { //Randomly queues up some safe l
         List<QueueData> available = new ArrayList<>();
         //Is Enabled??
         if (!isEnabled()) return available;
+        if (!DatabaseHandler.getQueue().isLoaded()) return available;
         List<QueueData> queueData = DatabaseHandler.getQueue().getInRange(new DatabaseQueue.QueueRangeData(rtpWorld));
         for (QueueData data : queueData) {
             if (!Objects.equals(data.getLocation().getWorld().getName(), rtpWorld.getWorld().getName()))
@@ -94,14 +95,12 @@ public class QueueHandler implements Listener { //Randomly queues up some safe l
     }
 
     public static boolean isInCircle(Location loc, RTPWorld rtpWorld) {
-        int center_x = rtpWorld.getCenterX();
-        int center_z = rtpWorld.getCenterZ();
-        int radius = rtpWorld.getMaxRadius();
-        int radius_min = rtpWorld.getMinRadius();
-        int x = loc.getBlockX();
-        int z = loc.getBlockZ();
-        int square_dist = (center_x - x) * 2 + (center_z - z) * 2;
-        return square_dist <= radius * 2 && square_dist >= radius_min * 2;
+        long dx = (long) loc.getBlockX() - rtpWorld.getCenterX();
+        long dz = (long) loc.getBlockZ() - rtpWorld.getCenterZ();
+        long radius = rtpWorld.getMaxRadius();
+        long radiusMin = rtpWorld.getMinRadius();
+        long squareDist = dx * dx + dz * dz;
+        return squareDist <= radius * radius && squareDist >= radiusMin * radiusMin;
     }
 
     public static boolean isInSquare(Location loc, RTPWorld rtpWorld) {
@@ -114,4 +113,3 @@ public class QueueHandler implements Listener { //Randomly queues up some safe l
         // (All locations provided should be below the MaxRadius anyway, but I put it in just in-case.)
     }
 }
-

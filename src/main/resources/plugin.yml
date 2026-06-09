@@ -1,7 +1,8 @@
 main: me.SuperRonanCraft.BetterRTP.BetterRTP
 version: ${project.version}
 name: BetterRTP
-author: SuperRonanCraft
+description: BetterRTP maintained for noasaba / nanosize
+author: SuperRonanCraft, nanosize
 folia-supported: true #As of 3.6.8 thanks to LOOHP#6007, TechnicallyCoded#9095 and loving11ish#2066
 softdepend:
     - Vault
@@ -26,7 +27,7 @@ softdepend:
     - Essentials #adds `/back` support
     - PlaceholderAPI
     - HuskClaims #fixed condition race which breaks hooking
-api-version: '1.13'
+api-version: '1.21'
 
 commands:
     betterrtp:

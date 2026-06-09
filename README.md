@@ -21,6 +21,15 @@ The file will be in the Target file.
 
 ## Where's the Wiki?  
 The wiki is available [here](../../wiki)!
+
+## Commands
+
+主要なチャットコマンド、権限、使用例、詳細説明は [`command.md`](./command.md) を参照してください。
+
+## Credits
+
+Original author: SuperRonanCraft<br>
+Modified and maintained for noasaba by nanosize.
     
 <p align="center">
   <b>Chat with us on Discord</b><br/>

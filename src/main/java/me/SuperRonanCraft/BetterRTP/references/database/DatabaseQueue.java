@@ -15,6 +15,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 
 public class DatabaseQueue extends SQLite {
@@ -82,6 +83,12 @@ public class DatabaseQueue extends SQLite {
             super.load();
     }
 
+    @Override
+    public void initialize() {
+        super.initialize();
+        createIndexes();
+    }
+
     public List<QueueData> getInRange(QueueRangeData range) {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -89,19 +96,25 @@ public class DatabaseQueue extends SQLite {
         List<QueueData> queueDataList = new ArrayList<>();
         try {
             conn = getSQLConnection();
-            //ps = conn.prepareStatement("SELECT * FROM " + tables.get(0) + " WHERE ? BETWEEN ? AND ? AND ? BETWEEN ? AND ?");
+            int count = getRangeCount(conn, range);
+            if (count <= 0)
+                return queueDataList;
+            int limit = QueueGenerator.queueMax + 1;
+            int maxOffset = Math.max(0, count - limit);
+            int offset = maxOffset > 0 ? new Random().nextInt(maxOffset + 1) : 0;
             ps = conn.prepareStatement("SELECT * FROM " + tables.get(0) + " WHERE "
-                    + COLUMNS.WORLD.name + " = '" + range.getWorld().getName() + "' AND "
-                    + COLUMNS.X.name + " BETWEEN " + range.getXLow() + " AND " + range.getXHigh()
-                    + " AND " + COLUMNS.Z.name + " BETWEEN " + range.getZLow() + " AND " + range.getZHigh()
-                    + " ORDER BY RANDOM() LIMIT " + (QueueGenerator.queueMax + 1)
+                    + COLUMNS.WORLD.name + " = ? AND "
+                    + COLUMNS.X.name + " BETWEEN ? AND ?"
+                    + " AND " + COLUMNS.Z.name + " BETWEEN ? AND ?"
+                    + " LIMIT ? OFFSET ?"
             );
-            /*ps.setString(1, COLUMNS.X.name);
+            ps.setString(1, range.getWorld().getName());
             ps.setInt(2, range.getXLow());
             ps.setInt(3, range.getXHigh());
-            ps.setString(4, COLUMNS.Z.name);
-            ps.setInt(5, range.getZLow());
-            ps.setInt(6, range.getZHigh());*/
+            ps.setInt(4, range.getZLow());
+            ps.setInt(5, range.getZHigh());
+            ps.setInt(6, limit);
+            ps.setInt(7, offset);
 
             //BetterRTP.getInstance().getLogger().info(ps.toString());
             rs = ps.executeQuery();
@@ -123,6 +136,49 @@ public class DatabaseQueue extends SQLite {
             close(ps, rs, conn);
         }
         return queueDataList;
+    }
+
+    private int getRangeCount(Connection conn, QueueRangeData range) throws SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.prepareStatement("SELECT COUNT(*) FROM " + tables.get(0) + " WHERE "
+                    + COLUMNS.WORLD.name + " = ? AND "
+                    + COLUMNS.X.name + " BETWEEN ? AND ?"
+                    + " AND " + COLUMNS.Z.name + " BETWEEN ? AND ?"
+            );
+            ps.setString(1, range.getWorld().getName());
+            ps.setInt(2, range.getXLow());
+            ps.setInt(3, range.getXHigh());
+            ps.setInt(4, range.getZLow());
+            ps.setInt(5, range.getZHigh());
+            rs = ps.executeQuery();
+            return rs.next() ? rs.getInt(1) : 0;
+        } finally {
+            close(ps, rs, null);
+        }
+    }
+
+    private void createIndexes() {
+        Connection conn = null;
+        Statement statement = null;
+        try {
+            conn = getSQLConnection();
+            statement = conn.createStatement();
+            statement.executeUpdate("CREATE INDEX IF NOT EXISTS idx_queue_world_x_z ON " + tables.get(0)
+                    + " (" + COLUMNS.WORLD.name + ", " + COLUMNS.X.name + ", " + COLUMNS.Z.name + ")");
+        } catch (SQLException ex) {
+            BetterRTP.getInstance().getLogger().log(Level.SEVERE, Errors.sqlConnectionExecute(), ex);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
+                    Error.close(BetterRTP.getInstance(), ex);
+                }
+            }
+            close(null, null, conn);
+        }
     }
 
     //Set a queue to save

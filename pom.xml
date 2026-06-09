@@ -7,12 +7,13 @@
     <groupId>me.SuperRonanCraft</groupId>
     <artifactId>BetterRTP</artifactId>
     <packaging>jar</packaging>
-    <version>3.6.13</version>
+    <version>3.6.15</version>
 
     <!-- Upload patches to https://repo.ronanplugins.com/#/ -->
 
     <properties>
         <maven.compiler.release>8</maven.compiler.release>
+        <lombok.version>1.18.46</lombok.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -84,10 +85,17 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>3.14.0</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
         </plugins>
@@ -167,14 +175,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.8.8-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- Spigot Stuff -->
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.8.8-R0.1-SNAPSHOT</version>
+            <version>1.21.6-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- Vault -->
@@ -204,12 +205,24 @@
             <artifactId>RedProtect-Core</artifactId>
             <version>7.7.3</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>br.net.fabiozumbi12.RedProtect</groupId>
-            <artifactId>RedProtect-Spigot-1.13</artifactId>
+            <artifactId>RedProtect-Spigot</artifactId>
             <version>7.7.3</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- FactionsUUID (https://www.spigotmc.org/resources/factionsuuid.1035/) -->
         <dependency>
@@ -217,6 +230,12 @@
             <artifactId>Factions</artifactId>
             <version>1.6.9.5-U0.6.8</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Lands (https://www.spigotmc.org/resources/lands.53313/) -->
         <dependency>
@@ -224,6 +243,12 @@
             <artifactId>LandsAPI</artifactId>
             <version>6.28.11</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- ProtocolLib -->
         <dependency>
@@ -231,6 +256,12 @@
             <artifactId>ProtocolLib</artifactId>
             <version>4.8.0</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Towny (https://www.spigotmc.org/resources/towny.72694/) -->
         <dependency>
@@ -238,6 +269,12 @@
             <artifactId>Towny</artifactId>
             <version>0.98.6.6</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- GriefPrevention (https://www.spigotmc.org/resources/griefprevention.1884/) -->
         <dependency>
@@ -245,6 +282,12 @@
             <artifactId>GriefPrevention</artifactId>
             <version>16.18</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- KingdomsX v1.10.5.2 (https://www.spigotmc.org/resources/kingdomsx.77670/) -->
         <dependency>
@@ -265,6 +308,12 @@
             <artifactId>GriefDefenderApi</artifactId>
             <version>920a610</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Peublos (https://www.spigotmc.org/resources/pueblos.91255/) -->
         <dependency>
@@ -272,6 +321,12 @@
             <artifactId>Pueblos</artifactId>
             <version>97b96c9</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Particles Library
         https://github.com/ByteZ1337/ParticleLib
@@ -282,11 +337,24 @@
             <version>1.8.4</version>
             <scope>compile</scope>
         </dependency>
+        <!-- JSON support used by command output parsing and bundled metrics payloads -->
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <!-- Lombok Support (@Getter & @Setter)-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.26</version>
+            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
         <!-- EssentialsX -->
@@ -297,8 +365,8 @@
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
-                    <groupId>org.bstats</groupId>
-                    <artifactId>bstats-bukkit</artifactId>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -310,8 +378,8 @@
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
-                    <groupId>com.sk89q.worldguard</groupId>
-                    <artifactId>worldguard-bukkit</artifactId>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -321,6 +389,12 @@
             <artifactId>placeholderapi</artifactId>
             <version>2.11.2</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- HuskClaims (https://www.spigotmc.org/resources/huskclaims.114467/) (Added in 3.6.13)-->
         <dependency>
@@ -328,6 +402,12 @@
             <artifactId>huskclaims-bukkit</artifactId>
             <version>1.5.2</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Husktown (https://www.spigotmc.org/resources/husktowns.92672/) (Added in 3.4.5)-->
         <dependency>
@@ -335,6 +415,12 @@
             <artifactId>husktowns-bukkit</artifactId>
             <version>3.0</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- MinePlots (https://builtbybit.com/resources/mineplots.21646/) (Added in 3.6.6 )   -->
         <dependency>
@@ -342,6 +428,12 @@
             <artifactId>plugin-api</artifactId>
             <version>3.4.5</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- FoliaLib -->
         <dependency>
@@ -363,6 +455,12 @@
             <artifactId>CrashClaim</artifactId>
             <version>c697d3e9ef</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- CAN BE UNCOMMENTED IF YOU HAVE ACCESS TO THE PLUGIN -->
